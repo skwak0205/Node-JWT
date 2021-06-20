@@ -1,6 +1,9 @@
 const router = require('express').Router();
-const { login } = require('../controllers/user');
+const { login, deleteUser } = require('../controllers/user');
+const { verify } = require('../utils');
 
-router.post('/', login);
+router.post('/login', login);
+
+router.delete('/users/:userId', verify, deleteUser);
 
 module.exports = router;

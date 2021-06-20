@@ -21,8 +21,16 @@ const login = (req, res) => {
       accessToken,
     });
   } else {
-    res.status(400).json('Username or password incoorect!');
+    res.status(400).json('Username or password incorrect!');
   }
 };
 
-module.exports = { login };
+const deleteUser = (req, res) => {
+  if (req.user.id === req.params.userId || req.user.isAdmin) {
+    res.status(200).json('User has been deleted');
+  } else {
+    res.status(403).json('You are not allowed to delete this user!');
+  }
+};
+
+module.exports = { login, deleteUser };
