@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode';
 import './App.css';
 
 function App() {
@@ -25,6 +26,24 @@ function App() {
     }
   };
 
+  const axiosJWT = axios.create();
+
+  axiosJWT.interceptors.request.use(
+    async (config) => {
+      let currentDate = new Date();
+      const decodedToken = jwt_decode(user.accessToken);
+
+      if (decodedToken.exp * 1000 < currentDate.getTime()) {
+        const data = await refreshToken();
+        config.headers['authorization'] = 'Bearer ' + data.accessToken;
+      }
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -41,7 +60,7 @@ function App() {
     setError(false);
 
     try {
-      await axios.delete('/users/' + id, {
+      await axiosJWT.delete('/users/' + id, {
         headers: { authorization: 'Bearer ' + user.accessToken },
       });
 
