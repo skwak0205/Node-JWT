@@ -61,4 +61,10 @@ const deleteUser = (req, res) => {
   }
 };
 
-module.exports = { login, refreshToken, deleteUser };
+const logout = (req, res) => {
+  const refreshToken = req.body.token;
+  refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+  res.status(200).json('You logged out successfully');
+};
+
+module.exports = { login, refreshToken, deleteUser, logout };
